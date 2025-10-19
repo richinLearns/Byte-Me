@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login - CookieGram</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f5f5f5; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+    .card { background:#fff; padding:2rem; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); width:320px; }
+    .card h2 { margin:0 0 1rem 0; font-size:1.25rem; }
+    .field { margin-bottom:0.75rem; }
+    label { display:block; font-size:0.85rem; margin-bottom:0.25rem; }
+    input { width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px; }
+    button { width:100%; padding:0.6rem; background:#d2691e; color:#fff; border:none; border-radius:4px; font-weight:600; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Login to CookieGram</h2>
+
+    <!-- Thymeleaf form: includes CSRF token automatically/This was just temporary so i can do tests -->
+    <form th:action="@{/login}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required />
+      </div>
+      <button type="submit">Log in</button>
+    </form>
+
+    <p style="margin-top:0.75rem; font-size:0.9rem; color:#555;">
+      Or <a href="/">join now</a>.
+    </p>
+  </div>
+</body>
+</html>
