@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookiegram Kitchen - Order Management</title>
+    
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+          crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons CDN (for clock, gear, and people icons) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- Minimal custom CSS for fixed bottom bar spacing -->
+    <style>
+        /* Add padding to the top and bottom of the body to prevent content from being hidden behind the fixed navbars */
+        body {
+            padding-top: 56px;
+            padding-bottom: 70px;
+            min-height: 100vh; 
+            background-color: #f8f9fa;
+        }
+        /* Top fixed navbar border for separation */
+        .fixed-top {
+            border-bottom: 1px solid #dee2e6;
+        }
+        /* Bottom fixed navbar shadow for lift effect */
+        .fixed-bottom {
+            box-shadow: 0 -2px 5px rgba(0,0,0,.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 
+    ======================================
+    TOP NAVIGATION BAR
+    ======================================
+    -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <div class="container-fluid">
+            
+            <!-- Left Side: Kitchen Title and Page Title -->
+            <div class="d-flex align-items-center">
+                <!-- Cookie Icon Added -->
+                <a class="navbar-brand fw-bold me-3" href="#">
+                    <i class="bi bi-cookie me-2 text-warning"></i> <!-- Added cookie icon -->
+                    Cookiegram Kitchen
+                </a>
+                <span class="navbar-text me-auto text-muted d-none d-sm-inline">
+                    Order Management
+                </span>
+            </div>
+            
+            <!-- Right Side: Dynamic Time, Staff, Notifications, Settings -->
+            <div class="d-flex align-items-center ms-auto">
+                
+                <!-- Dynamic Time (NOW WITH ID FOR JAVASCRIPT) -->
+                <span class="navbar-text me-3 d-none d-md-inline">
+                    <i class="bi bi-clock-fill me-1"></i> 
+                    <!-- We keep th:text for the initial load, but the JS updates this span -->
+                    <span id="local-clock" th:text="${currentTime}">Loading...</span> 
+                </span>
+
+                <!-- Staff Count (Constant for now) -->
+                <span class="navbar-text me-3 text-dark">
+                    <i class="bi bi-people-fill me-1"></i> 
+                    4 Staff <!-- TODO: Change '4 Staff' to be dynamic using th:text="${staffCount}" -->
+                </span>
+
+                <!-- Notifications Dropdown/Overlay Card -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-link nav-link p-0" 
+                            type="button" 
+                            id="notificationsDropdown" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false"
+                            title="Notifications">
+                        <i class="bi bi-bell-fill fs-5 text-dark"></i>
+                        <!-- TODO: Add a badge for active notifications when implemented -->
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" 
+                        aria-labelledby="notificationsDropdown" 
+                        style="min-width: 250px;">
+                        <!-- TODO: Populate this list dynamically with notifications -->
+                        <li class="dropdown-item text-center text-muted">No Notifications</li>
+                    </ul>
+                </div>
+                
+                <!-- Settings Icon -->
+                <a class="nav-link" href="#" title="Settings">
+                    <i class="bi bi-gear-fill fs-5 text-dark"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 
+    ======================================
+    MAIN CONTENT AREA
+    ======================================
+    -->
+    <!-- 
+    <div class="container-fluid order-container">
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <span class="badge bg-primary me-3">New Orders <span class="badge bg-white text-primary">1 orders</span></span>
+                <span class="badge bg-warning me-3">In Progress <span class="badge bg-white text-warning">2 orders</span></span>
+                <span class="badge bg-success">Ready for Pickup <span class="badge bg-white text-success">2 orders</span></span>
+            </div>
+        </div>
+
+        <div class="row flex-nowrap overflow-auto pb-3" style="min-height: 80vh;">
+            
+            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
+                <h5 class="fw-bold text-primary">New Orders</h5>
+                <hr class="mt-0">
+                
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-primary">New Order</span>
+                            <span class="text-muted fw-bold">#1005</span>
+                        </div>
+                        <h6 class="card-title fw-bold">Amy Wilson</h6>
+                        <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1 text-muted"></i> Pickup: 4:00 PM</p>
+                        
+                        <div class="alert alert-light border p-2 mb-2">
+                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
+                            <small class="text-muted">Qty: 1, 25th anniversary theme</small>
+                        </div>
+                        
+                        <div class="alert alert-warning p-2 mb-3 small">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> **Special Instructions**<br>
+                            Customer is allergic to nuts - please ensure no cross-contamination
+                        </div>
+                        
+                        <p class="mb-2 small text-muted">(555) 345-6789</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">Total: $19.99</span>
+                            <button class="btn btn-sm btn-primary">Start Baking</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
+                <h5 class="fw-bold text-warning">In Progress</h5>
+                <hr class="mt-0">
+
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-secondary">Baking</span>
+                            <span class="text-muted fw-bold">#1002</span>
+                        </div>
+                        <h6 class="card-title fw-bold">Mike Chen</h6>
+                        <p class="card-text small mb-1"><i class="bi bi-clock-fill me-1 text-muted"></i> Pickup: 3:30 PM</p>
+                        
+                        <div class="alert alert-light border p-2 mb-2">
+                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
+                            <small class="text-muted">Qty: 1, White and gold decorations</small>
+                        </div>
+                        
+                        <p class="mb-2 small text-muted">(555) 987-6543</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold">Total: $19.99</span>
+                        </div>
+                        <button class="btn btn-sm btn-danger w-100">Start Decorating</button>
+                    </div>
+                </div>
+
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-secondary">Decorating</span>
+                            <span class="text-muted fw-bold">#1003</span>
+                        </div>
+                        <h6 class="card-title fw-bold">Lisa Rodriguez</h6>
+                        <p class="card-text small mb-1"><i class="bi bi-clock-fill me-1 text-muted"></i> Pickup: 1:00 PM</p>
+                        
+                        <div class="alert alert-light border p-2 mb-2">
+                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
+                            <small class="text-muted">Qty: 1, School colors: blue and gold</small>
+                        </div>
+                        
+                        <p class="mb-2 small text-muted">(555) 456-7890</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold">Total: $19.99</span>
+                        </div>
+                        <button class="btn btn-sm btn-success w-100">Mark Ready</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
+                <h5 class="fw-bold text-success">Ready for Pickup</h5>
+                <hr class="mt-0">
+
+                <div class="card mb-3 shadow-lg border-danger border-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex">
+                                <span class="badge bg-success me-1">Ready</span>
+                                <span class="badge bg-danger">Rush</span>
+                            </div>
+                            <span class="text-muted fw-bold">#1001</span>
+                        </div>
+                        <h6 class="card-title fw-bold">Sarah Johnson</h6>
+                        <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1 text-muted"></i> Pickup: 2:00 PM</p>
+                        
+                        <div class="alert alert-light border p-2 mb-2">
+                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
+                            <small class="text-muted">Qty: 1, Number 5 in pink</small>
+                        </div>
+                        
+                        <div class="alert alert-warning p-2 mb-3 small">
+                            <i class="bi bi-pencil-fill me-1"></i> **Special Instructions**<br>
+                            Please write "Happy 5th Birthday Emma" in pink icing
+                        </div>
+                        
+                        <p class="mb-2 small text-muted">(555) 123-4567</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-bold">Total: $19.99</span>
+                        </div>
+                        
+                        <button class="btn btn-sm btn-success w-100 mb-2">Mark Completed</button>
+                        <button class="btn btn-sm btn-primary w-100">Create Shipping Label</button>
+                    </div>
+                </div>
+
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-success">Ready</span>
+                            <span class="text-muted fw-bold">#1004</span>
+                        </div>
+                        <h6 class="card-title fw-bold">David Kim</h6>
+                        <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1 text-muted"></i> Pickup: 12:00 PM</p>
+                        
+                        <div class="alert alert-light border p-2 mb-2">
+                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
+                            <small class="text-muted">Qty: 2, Pastel colors, baby theme</small>
+                        </div>
+                        
+                        <p class="mb-2 small text-muted">(555) 234-5678</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold">Total: $39.98</span>
+                        </div>
+                        <button class="btn btn-sm btn-success w-100">Mark Completed</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
+                <h5 class="fw-bold text-info">Completed</h5>
+                <hr class="mt-0">
+                <div class="card mb-3 shadow-sm border-0 text-muted">
+                    <div class="card-body">
+                        <p class="text-center my-3">No orders completed yet today.</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    -->
+
+    <!-- 
+    ======================================
+    BOTTOM NAVIGATION BAR
+    ======================================
+    -->
+    <nav class="navbar navbar-light bg-white fixed-bottom border-top">
+        <div class="container-fluid">
+            <!-- Navigation Items (Centered with flex) -->
+            <div class="w-100 d-flex justify-content-around">
+                
+                <!-- Dashboard (Active) -->
+                <a class="nav-link text-center active text-primary" href="/dashboard">
+                    <i class="bi bi-columns-gap d-block fs-4"></i>
+                    <small>Dashboard</small>
+                </a>
+                
+                <!-- Orders -->
+                <a class="nav-link text-center text-secondary" href="/orders">
+                    <i class="bi bi-receipt d-block fs-4"></i>
+                    <small>Orders</small>
+                </a>
+                
+                <!-- Schedule -->
+                <a class="nav-link text-center text-secondary" href="/schedule">
+                    <i class="bi bi-calendar-check d-block fs-4"></i>
+                    <small>Schedule</small>
+                </a>
+                
+                <!-- Reports -->
+                <a class="nav-link text-center text-secondary" href="/reports">
+                    <i class="bi bi-graph-up d-block fs-4"></i>
+                    <small>Reports</small>
+                </a>
+
+                <!-- Settings -->
+                <a class="nav-link text-center text-secondary d-md-none" href="/settings">
+                    <i class="bi bi-gear-fill d-block fs-4"></i>
+                    <small>Settings</small>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bootstrap JavaScript CDN (Required for responsive features, though not heavily used here) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+            xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+            crossorigin="anonymous"></script>
+
+    <!-- DYNAMIC CLOCK SCRIPT -->
+    <script>
+        function updateClock() {
+            const now = new Date();
+            // Create a formatter specifically for the Toronto time zone
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+                timeZone: 'America/Toronto' 
+            });
+
+            const formattedTime = formatter.format(now);
+            const clockElement = document.getElementById('local-clock');
+            
+            if (clockElement) {
+                clockElement.textContent = formattedTime;
+            }
+        }
+
+        // Call the function immediately to set the initial time
+        updateClock();
+
+        // Update the clock every 1 second (1000 milliseconds)
+        setInterval(updateClock, 1000);
+    </script>
+
+</body>
+</html>
