@@ -104,173 +104,63 @@
     MAIN CONTENT AREA
     ======================================
     -->
-    <!-- 
-    <div class="container-fluid order-container">
-        
-        <div class="row mb-4">
-            <div class="col-12">
-                <span class="badge bg-primary me-3">New Orders <span class="badge bg-white text-primary">1 orders</span></span>
-                <span class="badge bg-warning me-3">In Progress <span class="badge bg-white text-warning">2 orders</span></span>
-                <span class="badge bg-success">Ready for Pickup <span class="badge bg-white text-success">2 orders</span></span>
+    <div class="container-fluid pt-3">
+
+        <!-- ======================================
+            CONTENT VISIBLE TO ALL AUTHENTICATED USERS
+            ====================================== -->
+        <div class="alert alert-info">
+            <h4>Welcome to the Dashboard!</h4>
+            <p>This content is visible to everyone who is logged in, regardless of their role.</p>
+        </div>
+
+        <!-- ======================================
+            ROLE-SPECIFIC CONTENT
+            ====================================== -->
+
+        <!-- Customer-only content -->
+        <div th:if="${#authorization.expression('hasAuthority(''CUSTOMER'')')}">
+            <div class="card">
+                <div class="card-header">
+                    Customer Dashboard
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Your Orders</h5>
+                    <p class="card-text">Here you can view the status of your recent orders.</p>
+                    <a href="#" class="btn btn-primary">View My Orders</a>
+                </div>
             </div>
         </div>
 
-        <div class="row flex-nowrap overflow-auto pb-3" style="min-height: 80vh;">
-            
-            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
-                <h5 class="fw-bold text-primary">New Orders</h5>
-                <hr class="mt-0">
-                
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-primary">New Order</span>
-                            <span class="text-muted fw-bold">#1005</span>
-                        </div>
-                        <h6 class="card-title fw-bold">Amy Wilson</h6>
-                        <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1 text-muted"></i> Pickup: 4:00 PM</p>
-                        
-                        <div class="alert alert-light border p-2 mb-2">
-                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
-                            <small class="text-muted">Qty: 1, 25th anniversary theme</small>
-                        </div>
-                        
-                        <div class="alert alert-warning p-2 mb-3 small">
-                            <i class="bi bi-exclamation-triangle-fill me-1"></i> **Special Instructions**<br>
-                            Customer is allergic to nuts - please ensure no cross-contamination
-                        </div>
-                        
-                        <p class="mb-2 small text-muted">(555) 345-6789</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">Total: $19.99</span>
-                            <button class="btn btn-sm btn-primary">Start Baking</button>
-                        </div>
-                    </div>
+        <!-- Staff-only content -->
+        <div th:if="${#authorization.expression('hasAuthority(''STAFF'')')}">
+            <div class="card">
+                <div class="card-header">
+                    Staff Dashboard
                 </div>
-
-            </div>
-            
-            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
-                <h5 class="fw-bold text-warning">In Progress</h5>
-                <hr class="mt-0">
-
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-secondary">Baking</span>
-                            <span class="text-muted fw-bold">#1002</span>
-                        </div>
-                        <h6 class="card-title fw-bold">Mike Chen</h6>
-                        <p class="card-text small mb-1"><i class="bi bi-clock-fill me-1 text-muted"></i> Pickup: 3:30 PM</p>
-                        
-                        <div class="alert alert-light border p-2 mb-2">
-                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
-                            <small class="text-muted">Qty: 1, White and gold decorations</small>
-                        </div>
-                        
-                        <p class="mb-2 small text-muted">(555) 987-6543</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold">Total: $19.99</span>
-                        </div>
-                        <button class="btn btn-sm btn-danger w-100">Start Decorating</button>
-                    </div>
-                </div>
-
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-secondary">Decorating</span>
-                            <span class="text-muted fw-bold">#1003</span>
-                        </div>
-                        <h6 class="card-title fw-bold">Lisa Rodriguez</h6>
-                        <p class="card-text small mb-1"><i class="bi bi-clock-fill me-1 text-muted"></i> Pickup: 1:00 PM</p>
-                        
-                        <div class="alert alert-light border p-2 mb-2">
-                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
-                            <small class="text-muted">Qty: 1, School colors: blue and gold</small>
-                        </div>
-                        
-                        <p class="mb-2 small text-muted">(555) 456-7890</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold">Total: $19.99</span>
-                        </div>
-                        <button class="btn btn-sm btn-success w-100">Mark Ready</button>
-                    </div>
+                <div class="card-body">
+                    <h5 class="card-title">Order Management</h5>
+                    <p class="card-text">Here you can manage incoming orders and update their status.</p>
+                    <a href="#" class="btn btn-warning">Manage Orders</a>
                 </div>
             </div>
-
-            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
-                <h5 class="fw-bold text-success">Ready for Pickup</h5>
-                <hr class="mt-0">
-
-                <div class="card mb-3 shadow-lg border-danger border-3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="d-flex">
-                                <span class="badge bg-success me-1">Ready</span>
-                                <span class="badge bg-danger">Rush</span>
-                            </div>
-                            <span class="text-muted fw-bold">#1001</span>
-                        </div>
-                        <h6 class="card-title fw-bold">Sarah Johnson</h6>
-                        <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1 text-muted"></i> Pickup: 2:00 PM</p>
-                        
-                        <div class="alert alert-light border p-2 mb-2">
-                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
-                            <small class="text-muted">Qty: 1, Number 5 in pink</small>
-                        </div>
-                        
-                        <div class="alert alert-warning p-2 mb-3 small">
-                            <i class="bi bi-pencil-fill me-1"></i> **Special Instructions**<br>
-                            Please write "Happy 5th Birthday Emma" in pink icing
-                        </div>
-                        
-                        <p class="mb-2 small text-muted">(555) 123-4567</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="fw-bold">Total: $19.99</span>
-                        </div>
-                        
-                        <button class="btn btn-sm btn-success w-100 mb-2">Mark Completed</button>
-                        <button class="btn btn-sm btn-primary w-100">Create Shipping Label</button>
-                    </div>
-                </div>
-
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-success">Ready</span>
-                            <span class="text-muted fw-bold">#1004</span>
-                        </div>
-                        <h6 class="card-title fw-bold">David Kim</h6>
-                        <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1 text-muted"></i> Pickup: 12:00 PM</p>
-                        
-                        <div class="alert alert-light border p-2 mb-2">
-                            <i class="bi bi-cookie me-1"></i> Chocolate Chip Cookie<br>
-                            <small class="text-muted">Qty: 2, Pastel colors, baby theme</small>
-                        </div>
-                        
-                        <p class="mb-2 small text-muted">(555) 234-5678</p>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold">Total: $39.98</span>
-                        </div>
-                        <button class="btn btn-sm btn-success w-100">Mark Completed</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-12 col-md-4 col-lg-3 d-flex flex-column" style="min-width: 300px;">
-                <h5 class="fw-bold text-info">Completed</h5>
-                <hr class="mt-0">
-                <div class="card mb-3 shadow-sm border-0 text-muted">
-                    <div class="card-body">
-                        <p class="text-center my-3">No orders completed yet today.</p>
-                    </div>
-                </div>
-            </div>
-            
         </div>
+
+        <!-- Admin-only content -->
+        <div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+            <div class="card">
+                <div class="card-header">
+                    Admin Dashboard
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">System Administration</h5>
+                    <p class="card-text">Here you can manage users, view reports, and configure the system.</p>
+                    <a href="#" class="btn btn-danger">Admin Panel</a>
+                </div>
+            </div>
+        </div>
+
     </div>
-    -->
 
     <!-- 
     ======================================
