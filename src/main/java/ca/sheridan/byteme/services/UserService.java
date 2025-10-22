@@ -37,4 +37,8 @@ public class UserService implements UserDetailsService {
             .build();
         return userRepository.save(u);
     }
-}
+
+        public User saveUser(User user) {
+            return userRepository.save(user);
+        }
+    }
