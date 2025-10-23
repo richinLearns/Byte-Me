@@ -8,7 +8,13 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "index"; // src/main/resources/templates/index.html (already present)
+        return "index";
+    }
+
+    @GetMapping(params = "logout")
+    public String indexWithLogout(org.springframework.ui.Model model) {
+        model.addAttribute("logoutSuccess", true);
+        return "index";
     }
 
     @GetMapping("/login")

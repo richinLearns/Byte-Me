@@ -33,7 +33,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .logout(logout -> logout
             // allow GET /logout so current link works
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-            .logoutSuccessUrl("/?loggedOut=1")
+            .logoutSuccessUrl("/?logout")
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
             .permitAll()
