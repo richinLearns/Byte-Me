@@ -19,14 +19,16 @@ public class BootStrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String email = "admin@cookie.com";
-        if (userRepository.findByEmail(email).isEmpty()) {
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(passwordEncoder.encode("Password123!"));
-            user.setRole(Role.ADMIN);
-            userRepository.save(user); // Mongo will assign id
-            System.out.println("Inserted demo user: " + email);
+        String adminEmail = "admin@cookie.com";
+        if (userRepository.findByEmail(adminEmail).isEmpty()) {
+            User admin = User.builder()
+                    .name("Admin User")
+                    .email(adminEmail)
+                    .password(passwordEncoder.encode("Password123!"))
+                    .role(Role.ADMIN)
+                    .build();
+            userRepository.save(admin);
+            System.out.println("Inserted demo user: " + adminEmail + " / Password123!");
         }
 
         String staffEmail = "staff@cookie.com";
