@@ -22,8 +22,8 @@ public class RegistrationController {
 
   @GetMapping("/register")
   public String showForm(Model model) {
-    if (!model.containsAttribute("form")) {
-      model.addAttribute("form", new RegistrationForm());
+    if (!model.containsAttribute("registrationForm")) {
+      model.addAttribute("registrationForm", new RegistrationForm());
     }
     return "register";
   }
@@ -39,12 +39,12 @@ public class RegistrationController {
         .ifPresent(u -> binding.rejectValue("email", "exists", "Email already registered"));
 
     if (binding.hasErrors()) {
-      ra.addFlashAttribute("org.springframework.validation.BindingResult.form", binding);
-      ra.addFlashAttribute("form", form);
+      ra.addFlashAttribute("org.springframework.validation.BindingResult.registrationForm", binding);
+      ra.addFlashAttribute("registrationForm", form);
       return "redirect:/register";
     }
 
-    userService.createUser(form.getEmail(), form.getPassword(), Role.CUSTOMER);
+    userService.createUser(form.getName(), form.getEmail(), form.getPassword(), Role.CUSTOMER);
     ra.addFlashAttribute("registered", true);
     return "redirect:/login";
   }

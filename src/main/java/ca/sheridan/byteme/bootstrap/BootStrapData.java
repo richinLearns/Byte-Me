@@ -22,6 +22,7 @@ public class BootStrapData implements CommandLineRunner {
         String email = "admin@cookie.com";
         if (userRepository.findByEmail(email).isEmpty()) {
             User user = User.builder()
+                    .name("Admin User")
                     .email(email)
                     .password(passwordEncoder.encode("Password123!"))
                     .role(Role.ADMIN) // adjust role enum as needed
@@ -33,6 +34,7 @@ public class BootStrapData implements CommandLineRunner {
         String staffEmail = "staff@cookie.com";
         if (userRepository.findByEmail(staffEmail).isEmpty()) {
             User staff = User.builder()
+                    .name("Staff User")
                     .email(staffEmail)
                     .password(passwordEncoder.encode("Password123!"))
                     .role(Role.STAFF)
@@ -44,6 +46,7 @@ public class BootStrapData implements CommandLineRunner {
         String customerEmail = "customer@cookie.com";
         if (userRepository.findByEmail(customerEmail).isEmpty()) {
             User customer = User.builder()
+                    .name("Customer User")
                     .email(customerEmail)
                     .password(passwordEncoder.encode("Password123!"))
                     .role(Role.CUSTOMER)

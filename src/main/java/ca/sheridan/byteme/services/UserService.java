@@ -29,8 +29,9 @@ public class UserService implements UserDetailsService {
 
 
 
-    public User createUser(String email, String rawPassword, Role role) {
+    public User createUser(String name, String email, String rawPassword, Role role) {
         User u = User.builder()
+            .name(name)
             .email(email)
             .password(passwordEncoder.encode(rawPassword))
             .role(role)

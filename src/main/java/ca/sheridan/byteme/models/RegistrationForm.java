@@ -7,6 +7,9 @@ import lombok.Data;
 
 @Data
 public class RegistrationForm {
+  @NotBlank
+  private String name;
+
   @NotBlank @Email
   private String email;
 
