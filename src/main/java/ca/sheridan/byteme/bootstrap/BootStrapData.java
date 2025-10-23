@@ -21,13 +21,12 @@ public class BootStrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
         String email = "admin@cookie.com";
         if (userRepository.findByEmail(email).isEmpty()) {
-            User user = User.builder()
-                    .email(email)
-                    .password(passwordEncoder.encode("Password123!"))
-                    .role(Role.ADMIN) // adjust role enum as needed
-                    .build();
-            userRepository.save(user);
-            System.out.println("Inserted test user: " + email + " / Password123!");
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode("Password123!"));
+            user.setRole(Role.ADMIN);
+            userRepository.save(user); // Mongo will assign id
+            System.out.println("Inserted demo user: " + email);
         }
     }
 }
