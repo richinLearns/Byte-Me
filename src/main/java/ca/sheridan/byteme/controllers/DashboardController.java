@@ -1,23 +1,55 @@
 package ca.sheridan.byteme.controllers;
 
 import java.security.Principal;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-// THIS IS TEMPORARY HAHA FOR DEMO PURPOSES ONLY
+
+import ca.sheridan.byteme.beans.User;
+import ca.sheridan.byteme.services.UserService;
+
 @Controller
 public class DashboardController {
 
+    private final UserService userService;
+
+    public DashboardController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/dashboard")
-    public ResponseEntity<String> dashboard(Principal principal) {
-        String username = (principal != null) ? principal.getName() : "unknown";
-        String html = "<!doctype html><html><head><meta charset='utf-8'><title>Dashboard</title>"
-            + "<style>body{font-family:Arial,sans-serif;padding:2rem;background:#f5f5f5} .card{background:#fff;padding:1.5rem;border-radius:8px;max-width:600px;margin:0 auto;}</style>"
-            + "</head><body><div class='card'><h1>Login successful</h1>"
-            + "<p>Signed in as: <strong>" + username + "</strong></p>"
-            + "<p><a href='/'>Go to homepage</a> · <a href='/logout'>Log out</a></p>"
-            + "</div></body></html>";
-        return ResponseEntity.ok().body(html);
+    public String getDashboard(Model model, Principal principal) {
+
+        // --- 1. Dynamic Clock Logic (Restored) ---
+        // Define the target time zone: America/Toronto (EST/EDT)
+        ZoneId userZone = ZoneId.of("America/Toronto"); // Default to Toronto
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User currentUser) {
+            if (currentUser.getTimezone() != null && !currentUser.getTimezone().isEmpty()) {
+                userZone = ZoneId.of(currentUser.getTimezone());
+            }
+        }
+        
+        // Get and format the current time in that time zone
+        ZonedDateTime zonedTime = ZonedDateTime.now(userZone);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+        String formattedTime = zonedTime.format(formatter);
+
+        // Add the formatted time string to the model for Thymeleaf (for initial load)
+        model.addAttribute("currentTime", formattedTime);
+
+        // --- 2. User/Security Details ---
+        String username = (principal != null) ? principal.getName() : "Guest";
+        model.addAttribute("username", username);
+        
+        // 3. Return the name of the Thymeleaf template
+       return "dashboard"; 
     }
 }

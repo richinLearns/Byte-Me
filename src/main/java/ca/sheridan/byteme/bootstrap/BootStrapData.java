@@ -28,5 +28,29 @@ public class BootStrapData implements CommandLineRunner {
             userRepository.save(user); // Mongo will assign id
             System.out.println("Inserted demo user: " + email);
         }
+
+        String staffEmail = "staff@cookie.com";
+        if (userRepository.findByEmail(staffEmail).isEmpty()) {
+            User staff = User.builder()
+                    .name("Staff User")
+                    .email(staffEmail)
+                    .password(passwordEncoder.encode("Password123!"))
+                    .role(Role.STAFF)
+                    .build();
+            userRepository.save(staff);
+            System.out.println("Inserted test user: " + staffEmail + " / Password123!");
+        }
+
+        String customerEmail = "customer@cookie.com";
+        if (userRepository.findByEmail(customerEmail).isEmpty()) {
+            User customer = User.builder()
+                    .name("Customer User")
+                    .email(customerEmail)
+                    .password(passwordEncoder.encode("Password123!"))
+                    .role(Role.CUSTOMER)
+                    .build();
+            userRepository.save(customer);
+            System.out.println("Inserted test user: " + customerEmail + " / Password123!");
+        }
     }
 }
