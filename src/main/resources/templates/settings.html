@@ -170,7 +170,9 @@
                 User Logout
             </div>
             <div class="card-body">
-                <a href="/logout" class="btn btn-danger">Logout</a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
             </div>
         </div>
 

@@ -9,7 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import jakarta.servlet.Filter;
 import lombok.AllArgsConstructor;
 
 @Configuration
@@ -31,8 +30,6 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .permitAll()
         )
         .logout(logout -> logout
-            // allow GET /logout so current link works
-            .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
             .logoutSuccessUrl("/?logout")
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
