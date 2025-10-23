@@ -32,21 +32,36 @@ class SecurityWebTest {
     private PasswordEncoder passwordEncoder;
 
     private final String adminEmail = "admin@cookie.com";
+    private final String staffEmail = "staff@cookie.com";
+    private final String customerEmail = "customer@cookie.com";
     private final String rawPassword = "Password123!";
+
 
     @BeforeEach
     void setUpDemoUser() {
         userRepository.deleteAll(); // Optional: clean slate for test isolation
 
-        if (userRepository.findByEmail(adminEmail).isEmpty()) {
-            User admin = User.builder()
-                    .name("Admin User")
-                    .email(adminEmail)
-                    .password(passwordEncoder.encode(rawPassword))
-                    .role(Role.ADMIN)
-                    .build();
-            userRepository.save(admin);
-        }
+        userRepository.save(User.builder()
+                .name("Admin User")
+                .email(adminEmail)
+                .password(passwordEncoder.encode(rawPassword))
+                .role(Role.ADMIN)
+                .build());
+
+        userRepository.save(User.builder()
+                .name("Staff User")
+                .email(staffEmail)
+                .password(passwordEncoder.encode(rawPassword))
+                .role(Role.STAFF)
+                .build());
+
+        userRepository.save(User.builder()
+                .name("Customer User")
+                .email(customerEmail)
+                .password(passwordEncoder.encode(rawPassword))
+                .role(Role.CUSTOMER)
+                .build());
+
     }
 
     @Test
@@ -59,7 +74,7 @@ class SecurityWebTest {
     }
 
     @Test
-    void loginFlowSucceedsAndDashboardAccessible() throws Exception {
+    void adminLoginShowsAdminDashboard() throws Exception {
         MvcResult result = mockMvc.perform(formLogin().user(adminEmail).password(rawPassword))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/dashboard"))
@@ -68,7 +83,36 @@ class SecurityWebTest {
         MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
         mockMvc.perform(get("/dashboard").session(session))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("System Administration")))
-            .andExpect(content().string(containsString("Admin Panel")));
+            .andExpect(content().string(containsString("Admin Dashboard")))
+            .andExpect(content().string(containsString("System Administration")));
     }
+
+    @Test
+    void staffLoginShowsStaffDashboard() throws Exception {
+        MvcResult result = mockMvc.perform(formLogin().user(staffEmail).password(rawPassword))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/dashboard"))
+            .andReturn();
+
+        MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
+        mockMvc.perform(get("/dashboard").session(session))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Staff Dashboard")))
+            .andExpect(content().string(containsString("Manage Orders")));
+}
+
+    @Test
+    void customerLoginShowsCustomerDashboard() throws Exception {
+        MvcResult result = mockMvc.perform(formLogin().user(customerEmail).password(rawPassword))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/dashboard"))
+            .andReturn();
+
+        MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
+        mockMvc.perform(get("/dashboard").session(session))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Customer Dashboard")))
+            .andExpect(content().string(containsString("View My Orders")));
+    }
+
 }
