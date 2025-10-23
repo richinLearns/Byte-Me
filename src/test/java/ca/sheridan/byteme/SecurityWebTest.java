@@ -12,7 +12,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
+import static org.hamcrest.Matchers.not;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -114,5 +115,74 @@ class SecurityWebTest {
             .andExpect(content().string(containsString("Customer Dashboard")))
             .andExpect(content().string(containsString("View My Orders")));
     }
+
+    @Test
+    void staffShouldNotSeeAdminContent() throws Exception {
+        MvcResult result = mockMvc.perform(formLogin().user(staffEmail).password(rawPassword))
+            .andReturn();
+
+        MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
+        mockMvc.perform(get("/dashboard").session(session))
+            .andExpect(content().string(not(containsString("Admin Dashboard"))))
+            .andExpect(content().string(not(containsString("Admin Panel"))));
+    }
+
+    @Test
+    void customerShouldNotSeeStaffOrAdminContent() throws Exception {
+        MvcResult result = mockMvc.perform(formLogin().user(customerEmail).password(rawPassword))
+            .andReturn();
+
+        MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
+        mockMvc.perform(get("/dashboard").session(session))
+            .andExpect(content().string(not(containsString("Staff Dashboard"))))
+            .andExpect(content().string(not(containsString("Admin Dashboard"))));
+    }
+    @Test
+    void unauthenticatedUserRedirectedFromDashboard() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("**/login"));
+    }
+    @Test
+    void customerBlockedFromAdminContent() throws Exception {
+        MvcResult result = mockMvc.perform(formLogin().user(customerEmail).password(rawPassword))
+            .andReturn();
+
+        MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
+        mockMvc.perform(get("/dashboard").session(session))
+            .andExpect(status().isOk())
+            .andExpect(content().string(not(containsString("Admin Dashboard"))))
+            .andExpect(content().string(not(containsString("Admin Panel"))));
+    }
+
+    @Test
+    void loginFailsWithInvalidPassword() throws Exception {
+        mockMvc.perform(formLogin().user(adminEmail).password("WrongPassword"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/login?error"));
+    }
+
+    @Test
+    void loginFailsWithUnknownUser() throws Exception {
+        mockMvc.perform(formLogin().user("ghost@cookie.com").password("Password123!"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/login?error"));
+    }
+
+    @Test
+    void logoutInvalidatesSession() throws Exception {
+        MvcResult result = mockMvc.perform(formLogin().user(adminEmail).password(rawPassword))
+            .andReturn();
+
+        MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
+
+        mockMvc.perform(post("/logout").session(session))
+            .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(get("/dashboard").session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("**/login"));
+    }
+
 
 }
