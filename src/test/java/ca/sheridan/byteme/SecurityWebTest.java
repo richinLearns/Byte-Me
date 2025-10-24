@@ -18,6 +18,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -176,13 +178,15 @@ class SecurityWebTest {
 
         MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
 
-        mockMvc.perform(post("/logout").session(session))
-            .andExpect(status().is3xxRedirection());
+        mockMvc.perform(post("/logout").session(session).with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/?logout"));
 
         mockMvc.perform(get("/dashboard").session(session))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("**/login"));
     }
+
 
 
 }
