@@ -14,6 +14,7 @@
     <!-- Bootstrap Icons CDN (for clock, gear, and people icons) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
+<<<<<<< HEAD
     <!-- Optional: Minimal custom CSS for fixed bottom bar spacing -->
     <style>
         /* Add padding to the top and bottom of the body to prevent content from being hidden behind the fixed navbars */
@@ -32,13 +33,21 @@
             box-shadow: 0 -2px 5px rgba(0,0,0,.1);
         }
     </style>
+=======
+    <!-- Minimal custom CSS for fixed bottom bar spacing -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
 </head>
 
 <body>
 
     <!-- 
     ======================================
+<<<<<<< HEAD
     TOP NAVIGATION BAR (FIXED)
+=======
+    TOP NAVIGATION BAR
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
     ======================================
     -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
@@ -47,7 +56,11 @@
             <!-- Left Side: Kitchen Title and Page Title -->
             <div class="d-flex align-items-center">
                 <!-- Cookie Icon Added -->
+<<<<<<< HEAD
                 <a class="navbar-brand fw-bold me-3" href="#">
+=======
+                <a class="navbar-brand fw-bold me-3" href="/">
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
                     <i class="bi bi-cookie me-2 text-warning"></i> <!-- Added cookie icon -->
                     Cookiegram Kitchen
                 </a>
@@ -80,20 +93,33 @@
                             data-bs-toggle="dropdown" 
                             aria-expanded="false"
                             title="Notifications">
+<<<<<<< HEAD
                         <i class="bi bi-bell-fill fs-5 text-dark"></i>
+=======
+                        <i class="bi bi-bell-fill fs-5"></i>
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
                         <!-- TODO: Add a badge for active notifications when implemented -->
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" 
                         aria-labelledby="notificationsDropdown" 
                         style="min-width: 250px;">
                         <!-- TODO: Populate this list dynamically with notifications -->
+<<<<<<< HEAD
                         <li class="dropdown-item text-center text-muted">No Notifications</li>
+=======
+                        <li class="dropdown-item text-center text-muted navbar-text">No Notifications</li>
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
                     </ul>
                 </div>
                 
                 <!-- Settings Icon -->
+<<<<<<< HEAD
                 <a class="nav-link" href="#" title="Settings">
                     <i class="bi bi-gear-fill fs-5 text-dark"></i>
+=======
+                <a class="nav-link" href="/settings" title="Settings">
+                    <i class="bi bi-gear-fill fs-5"></i>
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
                 </a>
             </div>
         </div>
@@ -101,6 +127,7 @@
 
     <!-- 
     ======================================
+<<<<<<< HEAD
     MAIN CONTENT AREA (COMMENTED OUT)
     ======================================
     -->
@@ -275,6 +302,76 @@
     <!-- 
     ======================================
     BOTTOM NAVIGATION BAR (FIXED)
+=======
+    MAIN CONTENT AREA
+    ======================================
+    -->
+    <div class="container-fluid pt-3">
+
+        <!-- 
+        ===========================================
+        CONTENT VISIBLE TO ALL AUTHENTICATED USERS
+        ===========================================
+        -->
+        <div class="alert alert-info">
+            <h4>Welcome to the Dashboard!</h4>
+            <p>This content is visible to everyone who is logged in, regardless of their role.</p>
+        </div>
+
+        <!-- 
+        ======================================
+        ROLE-SPECIFIC CONTENT
+        ====================================== 
+        -->
+
+        <!-- Customer-only content -->
+        <div th:if="${#authorization.expression('hasAuthority(''CUSTOMER'')')}">
+            <div class="card">
+                <div class="card-header">
+                    Customer Dashboard
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Your Orders</h5>
+                    <p class="card-text">Here you can view the status of your recent orders.</p>
+                    <a href="#" class="btn btn-primary">View My Orders</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff-only content -->
+        <div th:if="${#authorization.expression('hasAuthority(''STAFF'') or hasAuthority(''ADMIN'')')}">
+            <div class="card">
+                <div class="card-header">
+                    Staff Dashboard
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Order Management</h5>
+                    <p class="card-text">Here you can manage incoming orders and update their status.</p>
+                    <a href="#" class="btn btn-warning">Manage Orders</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin-only content -->
+        <div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+            <div class="card">
+                <div class="card-header">
+                    Admin Dashboard
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">System Administration</h5>
+                    <p class="card-text">Here you can manage users, view reports, and configure the system.</p>
+                    <a href="#" class="btn btn-danger">Admin Panel</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 
+    ======================================
+    BOTTOM NAVIGATION BAR
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
     ======================================
     -->
     <nav class="navbar navbar-light bg-white fixed-bottom border-top">
@@ -289,18 +386,27 @@
                 </a>
                 
                 <!-- Orders -->
+<<<<<<< HEAD
                 <a class="nav-link text-center text-secondary" href="/orders">
+=======
+                <a class="nav-link text-center" href="/orders">
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
                     <i class="bi bi-receipt d-block fs-4"></i>
                     <small>Orders</small>
                 </a>
                 
                 <!-- Schedule -->
+<<<<<<< HEAD
                 <a class="nav-link text-center text-secondary" href="/schedule">
+=======
+                <a class="nav-link text-center" href="/schedule">
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
                     <i class="bi bi-calendar-check d-block fs-4"></i>
                     <small>Schedule</small>
                 </a>
                 
                 <!-- Reports -->
+<<<<<<< HEAD
                 <a class="nav-link text-center text-secondary" href="/reports">
                     <i class="bi bi-graph-up d-block fs-4"></i>
                     <small>Reports</small>
@@ -311,6 +417,12 @@
                     <i class="bi bi-gear-fill d-block fs-4"></i>
                     <small>Settings</small>
                 </a>
+=======
+                <a class="nav-link text-center" href="/reports">
+                    <i class="bi bi-graph-up d-block fs-4"></i>
+                    <small>Reports</small>
+                </a>
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
             </div>
         </div>
     </nav>
@@ -321,6 +433,7 @@
             crossorigin="anonymous"></script>
 
     <!-- DYNAMIC CLOCK SCRIPT -->
+<<<<<<< HEAD
     <script>
         function updateClock() {
             const now = new Date();
@@ -346,6 +459,9 @@
         // Update the clock every 1 second (1000 milliseconds)
         setInterval(updateClock, 1000);
     </script>
+=======
+    <script th:src="@{/js/scripts.js}"></script>
+>>>>>>> Spring-Security-jwt-Set-up-with-JPA
 
 </body>
 </html>
