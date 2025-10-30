@@ -22,7 +22,12 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-4">
-                <div class="card shadow-lg p-4 mt-5">
+                <div class="card shadow-lg p-4 mt-5">                    
+
+                    <a href="/">
+                        <i class="bi btn bi-arrow-left"></i>
+                    </a>
+                    
                     <h2 class="card-title text-center mb-4">Create your Cookiegram Bakery account</h2>
 
                     <form th:action="@{/register}" th:object="${registrationForm}" method="post">

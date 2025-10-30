@@ -90,17 +90,21 @@
     -->
     <div class="container-fluid pt-3">
 
-        <!-- ======================================
-            CONTENT VISIBLE TO ALL AUTHENTICATED USERS
-            ====================================== -->
+        <!-- 
+        ===========================================
+        CONTENT VISIBLE TO ALL AUTHENTICATED USERS
+        ===========================================
+        -->
         <div class="alert alert-info">
             <h4>Welcome to the Dashboard!</h4>
             <p>This content is visible to everyone who is logged in, regardless of their role.</p>
         </div>
 
-        <!-- ======================================
-            ROLE-SPECIFIC CONTENT
-            ====================================== -->
+        <!-- 
+        ======================================
+        ROLE-SPECIFIC CONTENT
+        ====================================== 
+        -->
 
         <!-- Customer-only content -->
         <div th:if="${#authorization.expression('hasAuthority(''CUSTOMER'')')}">
@@ -117,7 +121,7 @@
         </div>
 
         <!-- Staff-only content -->
-        <div th:if="${#authorization.expression('hasAuthority(''STAFF'')')}">
+        <div th:if="${#authorization.expression('hasAuthority(''STAFF'') or hasAuthority(''ADMIN'')')}">
             <div class="card">
                 <div class="card-header">
                     Staff Dashboard

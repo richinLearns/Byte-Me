@@ -94,10 +94,10 @@
       <div class="card-body">
         <h5 class="card-title">Customize your app experience.</h5>
         <form id="theme-timezone-form" th:action="@{/settings/preferences}" method="post">
-          <div class="form-check form-switch mb-3">
+          <!-- <div class="form-check form-switch mb-3">
             <input class="form-check-input" type="checkbox" id="darkModeSwitch">
             <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
-          </div>
+          </div> -->
           <div class="mb-3">
             <label for="timezoneSelect" class="form-label">Timezone</label>
             <select class="form-select" id="timezoneSelect" name="timezone" th:field="${updateProfileRequest.timezone}">
