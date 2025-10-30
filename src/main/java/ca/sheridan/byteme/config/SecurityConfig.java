@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import lombok.AllArgsConstructor;
 
@@ -21,7 +20,7 @@ public class SecurityConfig {
     @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-        .csrf(csrf -> csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
+        .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
         .headers(headers -> headers.frameOptions(frame -> frame.disable()))
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .formLogin(form -> form
@@ -30,7 +29,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .permitAll()
         )
         .logout(logout -> logout
-            .logoutSuccessUrl("/?logout")
+            .logoutSuccessUrl("/")
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
             .permitAll()

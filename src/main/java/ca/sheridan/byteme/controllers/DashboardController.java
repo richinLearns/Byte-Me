@@ -12,16 +12,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import ca.sheridan.byteme.beans.User;
-import ca.sheridan.byteme.services.UserService;
 
+
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Controller
 public class DashboardController {
-
-    private final UserService userService;
-
-    public DashboardController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("/dashboard")
     public String getDashboard(Model model, Principal principal) {
