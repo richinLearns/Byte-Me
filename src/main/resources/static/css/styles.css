@@ -21,6 +21,185 @@ body{
   padding-bottom: max(var(--bottom-nav-h), env(safe-area-inset-bottom));
 }
 
+/* Dark mode styles */
+:root {
+  --dark-bg: #1e293b;
+  --dark-card: #334155;
+  --dark-border: #475569;
+  --dark-text: #f8fafc;
+  --dark-muted: #e2e8f0;
+  --dark-feature-card: rgba(51, 65, 85, 0.9);
+  --dark-glass: rgba(15, 23, 42, 0.75);
+}
+
+.dark-mode {
+  --text: var(--dark-text);
+  background: var(--dark-bg) !important;
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .navbar,
+.dark-mode .card,
+.dark-mode .nav-glass,
+.dark-mode .navbar-light,
+.dark-mode .bottom-nav {
+  background: var(--dark-card) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .navbar *,
+.dark-mode .card *,
+.dark-mode .nav-glass *,
+.dark-mode .bottom-nav * {
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .text-muted,
+.dark-mode .navbar-text,
+.dark-mode small.d-block {
+  color: var(--dark-muted) !important;
+  opacity: 0.8;
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select {
+  background-color: var(--dark-bg) !important;
+  border-color: var(--dark-border) !important;
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .form-control:focus,
+.dark-mode .form-select:focus {
+  background-color: var(--dark-bg) !important;
+  border-color: var(--dark-text) !important;
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .card {
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .card-header {
+  background-color: var(--dark-card) !important;
+  border-bottom-color: var(--dark-border) !important;
+}
+
+.dark-mode .btn-secondary {
+  background-color: var(--dark-card) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .btn-secondary:hover {
+  background-color: var(--dark-border) !important;
+}
+
+.dark-mode .form-check-input {
+  background-color: var(--dark-bg) !important;
+  border-color: var(--dark-text) !important;
+}
+
+/* Specific styles for toggle switches in dark mode */
+.dark-mode .form-switch .form-check-input {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23e2e8f0'/%3e%3c/svg%3e") !important;
+  background-color: var(--dark-border) !important;
+  border-color: var(--dark-text) !important;
+}
+
+.dark-mode .form-switch .form-check-input:checked {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+}
+
+.dark-mode .form-switch .form-check-input:focus {
+  border-color: #86b7fe !important;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+.dark-mode .form-check-label {
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .form-text {
+  color: var(--dark-muted) !important;
+}
+
+/* Dark mode styles for index page */
+.dark-mode.home {
+  background: var(--dark-bg);
+}
+
+.dark-mode .nav-glass {
+  background: var(--dark-glass) !important;
+  backdrop-filter: saturate(180%) blur(8px);
+}
+
+.dark-mode .feature-card {
+  background: var(--dark-feature-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .feature-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .feature-card .card-title {
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .feature-card .card-text {
+  color: var(--dark-muted) !important;
+}
+
+.dark-mode .icon-wrap {
+  background: radial-gradient(80% 80% at 30% 20%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 247, 237, 0.1) 60%, rgba(253, 230, 138, 0.1) 100%);
+  color: #fbbf24 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2), 0 6px 18px rgba(251, 191, 36, 0.1);
+}
+
+.dark-mode .step-card {
+  background: var(--dark-feature-card);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .how-it-works {
+  background: linear-gradient(180deg, var(--dark-bg) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .step-card h5 {
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .service-banner {
+  background: var(--dark-card);
+  border-color: rgba(251, 191, 36, 0.2);
+  color: var(--dark-text) !important;
+}
+
+.dark-mode .service-banner a {
+  color: #fbbf24 !important;
+}
+
+.dark-mode .hero-wave svg {
+  fill: var(--dark-bg);
+}
+
+.dark-mode .badge-geo {
+  background: var(--dark-card) !important;
+  color: var(--dark-text) !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .trust {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
 /* ✅ Offset all non-home pages for fixed top navbar */
 body:not(.home){
   padding-top: var(--nav-h);
@@ -203,6 +382,12 @@ body.home{ padding-bottom: 0; }
 footer{
   background:#fff;
   border-top:1px solid #e5e7eb;
+}
+
+.dark-mode footer {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
 }
 
 /* Mobile tweak */

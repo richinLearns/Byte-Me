@@ -1,24 +1,28 @@
-// Theme loading/applying logic (common to all pages)
-const body = document.body;
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-    body.classList.add('dark-mode');
-} else {
-    body.classList.remove('dark-mode');
-}
+// Immediately apply theme before DOM is loaded to prevent flash
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-mode');
+        document.body.classList.add('dark-mode');
+    }
+})();
 
 // Dynamic Clock Script (common to dashboard and settings)
 function updateClock() {
+    const clockElement = document.getElementById('local-clock');
+    if (!clockElement) return;
+
     const now = new Date();
+    const userTimezone = localStorage.getItem('userTimezone') || 'America/Toronto';
     const formatter = new Intl.DateTimeFormat('en-US', {
         hour: 'numeric',
         minute: 'numeric',
+        second: 'numeric',
         hour12: true,
-        timeZone: 'America/Toronto' 
+        timeZone: userTimezone
     });
 
     const formattedTime = formatter.format(now);
-    const clockElement = document.getElementById('local-clock');
     
     if (clockElement) {
         clockElement.textContent = formattedTime;

@@ -74,16 +74,111 @@
           <div class="mb-3">
             <label for="currentPassword" class="form-label">Current Password</label>
             <input type="password" class="form-control" id="currentPassword" name="currentPassword" th:field="*{currentPassword}">
+            <div class="invalid-feedback" th:if="${errorMessage}" th:text="${errorMessage}"></div>
           </div>
+          
           <div class="mb-3">
             <label for="newPassword" class="form-label">New Password</label>
-            <input type="password" class="form-control" id="newPassword" name="newPassword" th:field="*{newPassword}">
+            <input type="password" class="form-control" id="newPassword" name="newPassword" th:field="*{newPassword}"
+                   pattern=".{8,}" title="Password must be at least 8 characters long">
+            <div class="form-text">Password must be at least 8 characters long</div>
+            <div id="passwordStrength" class="form-text mt-2"></div>
           </div>
+          
           <div class="mb-3">
             <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
             <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" th:field="*{confirmNewPassword}">
+            <div id="passwordMatch" class="form-text mt-2"></div>
           </div>
-          <button type="submit" class="btn btn-primary">Update Profile</button>
+          
+          <button type="submit" class="btn btn-primary" id="updateProfileBtn">Update Profile</button>
+
+          <!-- Password validation script -->
+          <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                const newPassword = document.getElementById('newPassword');
+                const confirmPassword = document.getElementById('confirmNewPassword');
+                const passwordMatch = document.getElementById('passwordMatch');
+                const passwordStrength = document.getElementById('passwordStrength');
+                const updateButton = document.getElementById('updateProfileBtn');
+                
+                function updatePasswordStrength(password) {
+                    if (password.length === 0) {
+                        passwordStrength.className = 'form-text mt-2';
+                        passwordStrength.textContent = '';
+                        return;
+                    }
+                    
+                    if (password.length < 8) {
+                        passwordStrength.className = 'form-text mt-2 text-danger';
+                        passwordStrength.textContent = 'Password is too short';
+                        return;
+                    }
+                    
+                    let strength = 0;
+                    if (password.match(/[a-z]/)) strength++;
+                    if (password.match(/[A-Z]/)) strength++;
+                    if (password.match(/[0-9]/)) strength++;
+                    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+                    
+                    switch(strength) {
+                        case 0:
+                        case 1:
+                            passwordStrength.className = 'form-text mt-2 text-danger';
+                            passwordStrength.textContent = 'Weak password';
+                            break;
+                        case 2:
+                            passwordStrength.className = 'form-text mt-2 text-warning';
+                            passwordStrength.textContent = 'Fair password';
+                            break;
+                        case 3:
+                            passwordStrength.className = 'form-text mt-2 text-info';
+                            passwordStrength.textContent = 'Good password';
+                            break;
+                        case 4:
+                            passwordStrength.className = 'form-text mt-2 text-success';
+                            passwordStrength.textContent = 'Strong password';
+                            break;
+                    }
+                }
+                
+                function checkPasswordMatch() {
+                    if (confirmPassword.value === '') {
+                        passwordMatch.className = 'form-text mt-2';
+                        passwordMatch.textContent = '';
+                        return;
+                    }
+                    
+                    if (newPassword.value === confirmPassword.value) {
+                        passwordMatch.className = 'form-text mt-2 text-success';
+                        passwordMatch.textContent = 'Passwords match';
+                        confirmPassword.classList.remove('is-invalid');
+                        confirmPassword.classList.add('is-valid');
+                    } else {
+                        passwordMatch.className = 'form-text mt-2 text-danger';
+                        passwordMatch.textContent = 'Passwords do not match';
+                        confirmPassword.classList.remove('is-valid');
+                        confirmPassword.classList.add('is-invalid');
+                    }
+                }
+                
+                newPassword.addEventListener('input', function() {
+                    updatePasswordStrength(this.value);
+                    if (confirmPassword.value !== '') {
+                        checkPasswordMatch();
+                    }
+                });
+                
+                confirmPassword.addEventListener('input', checkPasswordMatch);
+                
+                // Show the error message from the server if it exists
+                const errorMessage = /*[[${errorMessage}]]*/ null;
+                if (errorMessage) {
+                    const currentPassword = document.getElementById('currentPassword');
+                    currentPassword.classList.add('is-invalid');
+                }
+            });
+          </script>
         </form>
       </div>
     </div>
@@ -93,7 +188,7 @@
       <div class="card-header">Application Preferences</div>
       <div class="card-body">
         <h5 class="card-title">Customize your app experience.</h5>
-        <form id="theme-timezone-form" th:action="@{/settings/preferences}" method="post">
+        <form id="theme-timezone-form" th:action="@{/settings/preferences}" method="post" onsubmit="savePreferences(event)">
           <div class="form-check form-switch mb-3">
             <input class="form-check-input" type="checkbox" id="darkModeSwitch">
             <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
@@ -101,15 +196,9 @@
           <div class="mb-3">
             <label for="timezoneSelect" class="form-label">Timezone</label>
             <select class="form-select" id="timezoneSelect" name="timezone" th:field="${updateProfileRequest.timezone}">
-              <option value="America/Toronto">America/Toronto (GMT-05:00)</option>
-              <option value="America/New_York">America/New_York (GMT-05:00)</option>
-              <option value="America/Chicago">America/Chicago (GMT-06:00)</option>
-              <option value="America/Denver">America/Denver (GMT-07:00)</option>
-              <option value="America/Los_Angeles">America/Los_Angeles (GMT-08:00)</option>
-              <option value="Europe/London">Europe/London (GMT+00:00)</option>
-              <option value="Europe/Berlin">Europe/Berlin (GMT+01:00)</option>
-              <option value="Asia/Tokyo">Asia/Tokyo (GMT+09:00)</option>
-              <option value="Australia/Sydney">Australia/Sydney (GMT+10:00)</option>
+              <option th:each="tz : ${timeZones}" 
+                      th:value="${tz.id}" 
+                      th:text="${tz.display}">America/Toronto (GMT-05:00)</option>
             </select>
           </div>
           <button type="submit" class="btn btn-secondary">Save Preferences</button>
@@ -122,8 +211,40 @@
       <div class="card-header">Notification Controls</div>
       <div class="card-body">
         <h5 class="card-title">Control how you receive alerts.</h5>
-        <p class="card-text">Email, in-app, and push notification settings.</p>
-        <a href="#" class="btn btn-info">Manage Notifications</a>
+        <p class="card-text">Choose your preferred notification delivery methods.</p>
+        <form th:action="@{/settings/preferences}" method="post">
+          <!-- Preserve timezone value -->
+          <input type="hidden" name="timezone" th:value="${updateProfileRequest.timezone}">
+          
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="emailNotifications" name="emailNotifications"
+                   th:checked="${updateProfileRequest.emailNotifications}">
+            <label class="form-check-label" for="emailNotifications">
+              Email Notifications
+              <small class="text-muted d-block">Receive notifications via email</small>
+            </label>
+          </div>
+          
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="inAppNotifications" name="inAppNotifications"
+                   th:checked="${updateProfileRequest.inAppNotifications}">
+            <label class="form-check-label" for="inAppNotifications">
+              In-App Notifications
+              <small class="text-muted d-block">Show notifications in the application</small>
+            </label>
+          </div>
+          
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="pushNotifications" name="pushNotifications"
+                   th:checked="${updateProfileRequest.pushNotifications}">
+            <label class="form-check-label" for="pushNotifications">
+              Push Notifications
+              <small class="text-muted d-block">Receive browser push notifications</small>
+            </label>
+          </div>
+          
+          <button type="submit" class="btn btn-secondary">Save Notification Preferences</button>
+        </form>
       </div>
     </div>
 
@@ -171,5 +292,58 @@
           integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
           crossorigin="anonymous"></script>
   <script th:src="@{/js/scripts.js}"></script>
+  <script>
+    // Initialize theme and timezone
+    document.addEventListener('DOMContentLoaded', function() {
+      const darkModeSwitch = document.getElementById('darkModeSwitch');
+      const timezoneSelect = document.getElementById('timezoneSelect');
+
+      // Initialize dark mode switch
+      if (darkModeSwitch) {
+        const savedTheme = localStorage.getItem('theme');
+        darkModeSwitch.checked = savedTheme === 'dark';
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark-mode');
+          document.body.classList.add('dark-mode');
+        }
+      }
+
+      // Initialize timezone
+      if (timezoneSelect) {
+        const savedTimezone = localStorage.getItem('userTimezone');
+        if (savedTimezone) {
+          timezoneSelect.value = savedTimezone;
+        } else {
+          localStorage.setItem('userTimezone', timezoneSelect.value);
+        }
+      }
+    });
+
+    // Handle form submission
+    function savePreferences(event) {
+      event.preventDefault();
+      const darkModeSwitch = document.getElementById('darkModeSwitch');
+      const timezoneSelect = document.getElementById('timezoneSelect');
+
+      // Save theme
+      const newTheme = darkModeSwitch.checked ? 'dark' : 'light';
+      localStorage.setItem('theme', newTheme);
+      document.documentElement.classList.toggle('dark-mode', darkModeSwitch.checked);
+      document.body.classList.toggle('dark-mode', darkModeSwitch.checked);
+
+      // Save timezone
+      localStorage.setItem('userTimezone', timezoneSelect.value);
+
+      // Submit the form
+      event.target.submit();
+    }
+
+    // Handle dark mode toggle
+    document.getElementById('darkModeSwitch').addEventListener('change', function() {
+      document.documentElement.classList.toggle('dark-mode', this.checked);
+      document.body.classList.toggle('dark-mode', this.checked);
+      localStorage.setItem('theme', this.checked ? 'dark' : 'light');
+    });
+  </script>
 </body>
 </html>

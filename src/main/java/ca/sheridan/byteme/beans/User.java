@@ -29,6 +29,12 @@ public class User implements UserDetails {
     private String name;
     private String password;
     private String timezone;
+    @Builder.Default
+    private boolean emailNotifications = true;
+    @Builder.Default
+    private boolean inAppNotifications = false;
+    @Builder.Default
+    private boolean pushNotifications = false;
 
     private Role role;
 
