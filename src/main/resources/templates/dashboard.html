@@ -35,8 +35,11 @@
                     <i class="bi bi-cookie me-2 text-warning"></i> <!-- Added cookie icon -->
                     Cookiegram Kitchen
                 </a>
-                <span class="navbar-text me-auto text-muted d-none d-sm-inline">
+                <span class="navbar-text me-auto text-muted d-none d-sm-inline" th:if="${#authorization.expression('hasAuthority(''STAFF'')') or #authorization.expression('hasAuthority(''ADMIN'')')}">
                     Order Management
+                </span>
+                <span class="navbar-text me-auto text-muted d-none d-sm-inline" th:if="${#authorization.expression('hasAuthority(''CUSTOMER'')')}">
+                    Order
                 </span>
             </div>
             
@@ -51,7 +54,7 @@
                 </span>
 
                 <!-- Staff Count (Constant for now) -->
-                <span class="navbar-text me-3 text-dark">
+                <span class="navbar-text me-3 text-dark" th:if="${#authorization.expression('hasAuthority(''STAFF'')') or #authorization.expression('hasAuthority(''ADMIN'')')}">
                     <i class="bi bi-people-fill me-1"></i> 
                     4 Staff <!-- TODO: Change '4 Staff' to be dynamic using th:text="${staffCount}" -->
                 </span>
@@ -79,6 +82,13 @@
                 <a class="nav-link" href="/settings" title="Settings">
                     <i class="bi bi-gear-fill fs-5"></i>
                 </a>
+                
+                <!-- Logout Icon -->
+                <form th:action="@{/logout}" method="post" class="d-inline ms-3">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-primary">Log Out</button>
+                </form>
+                
             </div>
         </div>
     </nav>
@@ -117,7 +127,7 @@
         </div>
 
         <!-- Staff-only content -->
-        <div th:if="${#authorization.expression('hasAuthority(''STAFF'')')}">
+        <div th:if="${#authorization.expression('hasAuthority(''STAFF'')') or #authorization.expression('hasAuthority(''ADMIN'')')}">
             <div class="card">
                 <div class="card-header">
                     Staff Dashboard
@@ -163,19 +173,19 @@
                 </a>
                 
                 <!-- Orders -->
-                <a class="nav-link text-center" href="/orders">
+                <a class="nav-link text-center" href="/#">
                     <i class="bi bi-receipt d-block fs-4"></i>
                     <small>Orders</small>
                 </a>
                 
                 <!-- Schedule -->
-                <a class="nav-link text-center" href="/schedule">
+                <a class="nav-link text-center" href="/#" th:if="${#authorization.expression('hasAuthority(''STAFF'')') or #authorization.expression('hasAuthority(''ADMIN'')')}">
                     <i class="bi bi-calendar-check d-block fs-4"></i>
                     <small>Schedule</small>
                 </a>
                 
                 <!-- Reports -->
-                <a class="nav-link text-center" href="/reports">
+                <a class="nav-link text-center" href="/#" th:if="${#authorization.expression('hasAuthority(''STAFF'')') or #authorization.expression('hasAuthority(''ADMIN'')')}">
                     <i class="bi bi-graph-up d-block fs-4"></i>
                     <small>Reports</small>
                 </a>
