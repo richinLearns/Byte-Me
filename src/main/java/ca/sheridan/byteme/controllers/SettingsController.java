@@ -64,6 +64,7 @@ public class SettingsController {
                     .emailNotifications(currentUser.isEmailNotifications())
                     .inAppNotifications(currentUser.isInAppNotifications())
                     .pushNotifications(currentUser.isPushNotifications())
+                    .darkThemeEnabled(currentUser.isDarkThemeEnabled())
                     .build();
             model.addAttribute("updateProfileRequest", updateProfileRequest);
         } else {
@@ -119,6 +120,7 @@ public class SettingsController {
         currentUser.setEmailNotifications(updateProfileRequest.isEmailNotifications());
         currentUser.setInAppNotifications(updateProfileRequest.isInAppNotifications());
         currentUser.setPushNotifications(updateProfileRequest.isPushNotifications());
+        currentUser.setDarkThemeEnabled(updateProfileRequest.isDarkThemeEnabled());
         userService.saveUser(currentUser);
         redirectAttributes.addFlashAttribute("successMessage", "Preferences updated successfully!");
         return "redirect:/settings";

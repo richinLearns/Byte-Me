@@ -189,8 +189,9 @@
       <div class="card-body">
         <h5 class="card-title">Customize your app experience.</h5>
         <form id="theme-timezone-form" th:action="@{/settings/preferences}" method="post" onsubmit="savePreferences(event)">
+          <input type="hidden" id="darkThemeEnabled" name="darkThemeEnabled" th:value="${updateProfileRequest.darkThemeEnabled}">
           <div class="form-check form-switch mb-3">
-            <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+            <input class="form-check-input" type="checkbox" id="darkModeSwitch" th:checked="${updateProfileRequest.darkThemeEnabled}">
             <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
           </div>
           <div class="mb-3">
@@ -297,12 +298,12 @@
     document.addEventListener('DOMContentLoaded', function() {
       const darkModeSwitch = document.getElementById('darkModeSwitch');
       const timezoneSelect = document.getElementById('timezoneSelect');
+      const darkThemeEnabled = document.getElementById('darkThemeEnabled');
 
       // Initialize dark mode switch
-      if (darkModeSwitch) {
-        const savedTheme = localStorage.getItem('theme');
-        darkModeSwitch.checked = savedTheme === 'dark';
-        if (savedTheme === 'dark') {
+      if (darkModeSwitch && darkThemeEnabled) {
+        darkModeSwitch.checked = darkThemeEnabled.value === 'true';
+        if (darkThemeEnabled.value === 'true') {
           document.documentElement.classList.add('dark-mode');
           document.body.classList.add('dark-mode');
         }

@@ -36,6 +36,9 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean pushNotifications = false;
 
+    @Builder.Default
+    private boolean darkThemeEnabled = false;
+
     private Role role;
 
     @Override

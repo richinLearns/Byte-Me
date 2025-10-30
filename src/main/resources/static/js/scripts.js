@@ -1,9 +1,16 @@
-// Immediately apply theme before DOM is loaded to prevent flash
+// Theme initialization
 (function() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark-mode');
-        document.body.classList.add('dark-mode');
+    const userThemeInput = document.getElementById('darkThemeEnabled');
+    if (userThemeInput) {
+        // User is logged in, use their preference
+        if (userThemeInput.value === 'true') {
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
+        }
+    } else {
+        // Guest user - always use light theme
+        document.documentElement.classList.remove('dark-mode');
+        document.body.classList.remove('dark-mode');
     }
 })();
 
@@ -38,15 +45,19 @@ if (document.getElementById('local-clock')) {
 // Theme switching logic (specific to settings page)
 const darkModeSwitch = document.getElementById('darkModeSwitch');
 if (darkModeSwitch) {
-    darkModeSwitch.checked = (savedTheme === 'dark'); // Set initial state
+    const userThemeInput = document.getElementById('darkThemeEnabled');
+    darkModeSwitch.checked = userThemeInput ? userThemeInput.value === 'true' : false;
 
     darkModeSwitch.addEventListener('change', () => {
         if (darkModeSwitch.checked) {
-            body.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
         } else {
-            body.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light');
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+        }
+        if (userThemeInput) {
+            userThemeInput.value = darkModeSwitch.checked;
         }
     });
 }

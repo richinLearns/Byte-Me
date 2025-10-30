@@ -22,4 +22,7 @@ public class UpdateProfileRequest {
     private boolean inAppNotifications = false;
     @Builder.Default
     private boolean pushNotifications = false;
+
+    @Builder.Default
+    private boolean darkThemeEnabled = false;
 }
