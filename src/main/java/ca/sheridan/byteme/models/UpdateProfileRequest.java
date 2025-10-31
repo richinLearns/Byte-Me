@@ -16,4 +16,13 @@ public class UpdateProfileRequest {
     private String newPassword;
     private String confirmNewPassword;
     private String timezone;
+    @Builder.Default
+    private boolean emailNotifications = true;
+    @Builder.Default
+    private boolean inAppNotifications = false;
+    @Builder.Default
+    private boolean pushNotifications = false;
+
+    @Builder.Default
+    private boolean darkThemeEnabled = false;
 }
