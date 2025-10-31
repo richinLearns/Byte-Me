@@ -7,7 +7,7 @@ on:
     branches: [ "main" ] # Only deploy the final image from main
 
 env:
-  DOCKER_IMAGE: ghcr.io/richinLearns/cookiegram-demo
+  DOCKER_IMAGE: ghcr.io/richinlearns/cookiegram-demo
   TAG: ${{ github.sha }}
 
 jobs:
