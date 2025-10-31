@@ -2,9 +2,9 @@ name: CI/CD — Build, Test & Deploy
 
 on:
   push:
-    branches: [ "main", "docker" ]
+    branches: [ "*" ]
   pull_request:
-    branches: [ "main", "docker" ]
+    branches: [ "*" ]
 
 env:
   DOCKER_IMAGE: ghcr.io/richinlearns/cookiegram-demo
@@ -44,7 +44,7 @@ jobs:
   # 2️⃣ Docker Build & Push
   docker_deploy:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
