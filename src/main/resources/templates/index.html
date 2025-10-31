@@ -28,15 +28,26 @@
   <!-- Top Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm nav-glass">
     <div class="container">
-      <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
-        <i class="bi bi-cookie me-2 text-warning"></i>
-        <span>Cookiegram Bakery</span>
-      </a>
+        <section class="hero">
+            <h2>Welcome to CookieGram</h2>
+            <p>The sweetest social platform for cookie lovers!</p>
+            <a href="/login" class="cta-button">Join Now</a>
+        </section>
 
-      <div class="d-flex ms-auto" th:if="${not #authorization.expression('isAuthenticated()')}">
-        <a href="/login" class="btn btn-outline-primary me-2">Log In</a>
-        <a href="/register" class="btn btn-primary">Register</a>
-      </div>
+        <section class="features">
+            <div class="feature-card">
+                <h3>Share Recipes</h3>
+                <p>Share your favorite cookie recipes with our community</p>
+            </div>
+            <div class="feature-card">
+                <h3>Connect</h3>
+                <p>Meet other cookie enthusiasts from around the world</p>
+            </div>
+            <div class="feature-card">
+                <h3>Discover</h3>
+                <p>Find new and exciting cookie recipes daily</p>
+            </div>
+        </section>
 
       <div class="d-flex ms-auto" th:if="${#authorization.expression('isAuthenticated()')}">
         <a href="/dashboard" class="btn btn-outline-primary me-2">Dashboard</a>
@@ -46,10 +57,11 @@
           <button type="submit" class="btn btn-primary">Log Out</button>
         </form>
       </div>
+    </div>
   </nav>
 
   <!-- Logout toast (shows only if backend provides a message) -->
-  <!-- <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:1080;"
+  <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:1080;"
        th:if="${logoutMsg} or ${logoutSuccess}">
     <div class="toast align-items-center text-bg-success border-0 show" role="alert">
       <div class="d-flex">
@@ -62,7 +74,7 @@
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
-  </div> -->
+  </div>
 
   <!-- HERO -->
   <section class="hero hero-cookie d-flex align-items-center">
