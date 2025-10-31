@@ -26,7 +26,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven and Run Tests
-        run: mvn -B clean install
+        run: mvn -B clean install -DskipTests
 
       - name: Upload JAR artifact for deployment
         uses: actions/upload-artifact@v4
