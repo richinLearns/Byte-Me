@@ -1,10 +1,10 @@
 name: CI/CD — Build, Test & Deploy
 
 on:
-  pull_request:
-    branches: [ "main", "develop" ]
   push:
-    branches: [ "main" ] # Only deploy the final image from main
+    branches: [ "main", "docker" ]
+  pull_request:
+    branches: [ "main", "docker" ]
 
 env:
   DOCKER_IMAGE: ghcr.io/richinlearns/cookiegram-demo
