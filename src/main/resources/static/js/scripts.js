@@ -1,16 +1,40 @@
-// Theme loading/applying logic (common to all pages)
-const body = document.body;
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-    body.classList.add('dark-mode');
-} else {
-    body.classList.remove('dark-mode');
-}
+// Theme initialization
+(function() {
+    const userThemeInput = document.getElementById('darkThemeEnabled');
+    if (userThemeInput) {
+        // User is logged in, use their preference
+        if (userThemeInput.value === 'true') {
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
+        }
+    } else {
+        // Guest user - always use light theme
+        document.documentElement.classList.remove('dark-mode');
+        document.body.classList.remove('dark-mode');
+    }
+})();
 
-// Theme switching logic (specific to settings page)
-const darkModeSwitch = document.getElementById('darkModeSwitch');
-if (darkModeSwitch) {
-    darkModeSwitch.checked = (savedTheme === 'dark'); // Set initial state
+// Dynamic Clock Script (common to dashboard and settings)
+function updateClock() {
+    const clockElement = document.getElementById('local-clock');
+    if (!clockElement) return;
+
+    const now = new Date();
+    const userTimezone = localStorage.getItem('userTimezone') || 'America/Toronto';
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true,
+        timeZone: userTimezone
+    });
+
+    const formattedTime = formatter.format(now);
+    
+    if (clockElement) {
+        clockElement.textContent = formattedTime;
+    }
+}
 
     darkModeSwitch.addEventListener('change', () => {
         if (darkModeSwitch.checked) {
@@ -26,15 +50,19 @@ if (darkModeSwitch) {
 // Theme switching logic (specific to settings page)
 const darkModeSwitch = document.getElementById('darkModeSwitch');
 if (darkModeSwitch) {
-    darkModeSwitch.checked = (savedTheme === 'dark'); // Set initial state
+    const userThemeInput = document.getElementById('darkThemeEnabled');
+    darkModeSwitch.checked = userThemeInput ? userThemeInput.value === 'true' : false;
 
     darkModeSwitch.addEventListener('change', () => {
         if (darkModeSwitch.checked) {
-            body.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
         } else {
-            body.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light');
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+        }
+        if (userThemeInput) {
+            userThemeInput.value = darkModeSwitch.checked;
         }
     });
 }

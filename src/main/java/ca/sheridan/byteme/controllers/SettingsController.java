@@ -14,7 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class SettingsController {
@@ -33,12 +38,33 @@ public class SettingsController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm:ss a");
         model.addAttribute("currentTime", LocalDateTime.now().format(formatter));
 
+        // Get all available time zones and sort them by region/city
+        List<Map<String, String>> timeZones = ZoneId.getAvailableZoneIds().stream()
+            .filter(zoneId -> !zoneId.startsWith("Etc/") && !zoneId.startsWith("SystemV/"))
+            .map(zoneId -> {
+                ZoneId zone = ZoneId.of(zoneId);
+                ZonedDateTime now = ZonedDateTime.now(zone);
+                String offset = now.getOffset().getId().replace("Z", "+00:00");
+                return Map.of(
+                    "id", zoneId,
+                    "display", String.format("%s (%s)", zoneId, offset)
+                );
+            })
+            .sorted((a, b) -> a.get("display").compareTo(b.get("display")))
+            .collect(Collectors.toList());
+        
+        model.addAttribute("timeZones", timeZones);
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof User currentUser) {
             UpdateProfileRequest updateProfileRequest = UpdateProfileRequest.builder()
                     .name(currentUser.getName())
                     .email(currentUser.getEmail())
                     .timezone(currentUser.getTimezone() != null ? currentUser.getTimezone() : "America/Toronto") // Default to Toronto
+                    .emailNotifications(currentUser.isEmailNotifications())
+                    .inAppNotifications(currentUser.isInAppNotifications())
+                    .pushNotifications(currentUser.isPushNotifications())
+                    .darkThemeEnabled(currentUser.isDarkThemeEnabled())
                     .build();
             model.addAttribute("updateProfileRequest", updateProfileRequest);
         } else {
@@ -91,6 +117,10 @@ public class SettingsController {
         }
 
         currentUser.setTimezone(updateProfileRequest.getTimezone());
+        currentUser.setEmailNotifications(updateProfileRequest.isEmailNotifications());
+        currentUser.setInAppNotifications(updateProfileRequest.isInAppNotifications());
+        currentUser.setPushNotifications(updateProfileRequest.isPushNotifications());
+        currentUser.setDarkThemeEnabled(updateProfileRequest.isDarkThemeEnabled());
         userService.saveUser(currentUser);
         redirectAttributes.addFlashAttribute("successMessage", "Preferences updated successfully!");
         return "redirect:/settings";
