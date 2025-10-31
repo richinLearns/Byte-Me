@@ -1,4 +1,4 @@
-name: CI/CD — Build, Test & Push to Docker Hub
+name: CI/CD — Build & Push to Docker Hub
 
 on:
   push:
@@ -11,10 +11,11 @@ env:
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
-  build-and-test:
+  # 1. Build JAR (skip tests)
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
@@ -24,21 +25,16 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Run Maven tests
+      - name: Build (skip tests)
         run: mvn -B clean install -DskipTests
 
-      - name: Upload JAR
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-jar
-          path: target/*.jar
-
+  # 2. Docker push — ONLY on merge to main
   docker:
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Login to Docker Hub
@@ -47,7 +43,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
